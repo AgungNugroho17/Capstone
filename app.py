@@ -42,7 +42,7 @@ smoke = st.selectbox("Merokok?", list(smoke_map.keys()))
 ch2o = st.slider("Minum Air per Hari (liter)", 1.0, 3.0, 2.0)
 scc = st.selectbox("Pantau Kalori Harian?", list(scc_map.keys()))
 faf = st.slider("Frekuensi Aktivitas Fisik", 0.0, 3.0, 1.0)
-tue = st.slider("Waktu Layar per Hari", 0.0, 3.0, 1.0)
+tue = st.slider("Waktu Layar per Hari", 1-2 jam, 2-4 jam, lebih dari 4 jam)
 calc = st.selectbox("Konsumsi Alkohol", list(calc_map.keys()))
 mtrans = st.selectbox("Jenis Transportasi", list(mtrans_map.keys()))
 
