@@ -2,42 +2,64 @@ import streamlit as st
 import numpy as np
 import joblib
 
-# Load model dan preprocessing tools
+# Load model dan scaler
 model = joblib.load("rf_obesity_model.pkl")
 scaler = joblib.load("scaler.pkl")
-label_encoder = joblib.load("label_encoder.pkl")
 
 st.title("Prediksi Tingkat Obesitas")
 
-# Form input pengguna
-gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
+# ========================
+# 🧠 Manual Mapping Kategori
+# ========================
+gender_map = {"Male": 1, "Female": 0}
+family_map = {"yes": 1, "no": 0}
+favc_map = {"yes": 1, "no": 0}
+caec_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
+smoke_map = {"yes": 1, "no": 0}
+scc_map = {"yes": 1, "no": 0}
+calc_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
+mtrans_map = {
+    "Public_Transportation": 0,
+    "Walking": 1,
+    "Automobile": 2,
+    "Motorbike": 3,
+    "Bike": 4
+}
+
+# ========================
+# 📋 Form Input Pengguna
+# ========================
+gender = st.selectbox("Jenis Kelamin", list(gender_map.keys()))
 age = st.slider("Usia", 10, 100, 25)
-height = st.number_input("Tinggi Badan (meter)", value=1.70)
+height = st.number_input("Tinggi Badan (meter)", value=1.70, step=0.01)
 weight = st.number_input("Berat Badan (kg)", value=70.0)
-family_history = st.selectbox("Riwayat Keluarga Gemuk", ["yes", "no"])
-favc = st.selectbox("Sering Konsumsi Makanan Tinggi Kalori", ["yes", "no"])
-fcvc = st.slider("Porsi Sayur Setiap Makan (1-3)", 1.0, 3.0, 2.0)
-ncp = st.slider("Jumlah Makan Besar per Hari", 1.0, 4.0, 3.0)
-caec = st.selectbox("Ngemil?", ["Sometimes", "Frequently", "Always", "no"])
-smoke = st.selectbox("Merokok?", ["yes", "no"])
-ch2o = st.slider("Minum Air per Hari (liter)", 1.0, 3.0, 2.0)
-scc = st.selectbox("Kontrol Kalori?", ["yes", "no"])
-faf = st.slider("Frekuensi Aktivitas Fisik", 0.0, 3.0, 1.0)
-tue = st.slider("Waktu di Depan Layar", 0.0, 3.0, 1.0)
-calc = st.selectbox("Konsumsi Alkohol", ["no", "Sometimes", "Frequently", "Always"])
-mtrans = st.selectbox("Transportasi", ["Public_Transportation", "Walking", "Automobile", "Motorbike", "Bike"])
 
-# Kategorikal fitur yang perlu encoding
-cat_features = [gender, family_history, favc, caec, smoke, scc, calc, mtrans]
-cat_encoded = [label_encoder.transform([val])[0] for val in cat_features]
 
-# Fitur numerik
-num_features = [age, height, weight, fcvc, ncp, ch2o, faf, tue]
-num_scaled = scaler.transform([num_features])[0]
-
-# Gabungkan semua fitur
-final_features = np.concatenate([cat_encoded, num_scaled])
-
+# ========================
+# 🔄 Encoding dan Prediksi
+# ========================
 if st.button("Prediksi"):
-    prediction = model.predict([final_features])[0]
-    st.success(f"Tingkat Obesitas Anda: **{prediction}**")
+    # Manual encoding
+    cat_encoded = [
+        gender_map[gender],
+        family_map[family_history],
+        favc_map[favc],
+        caec_map[caec],
+        smoke_map[smoke],
+        scc_map[scc],
+        calc_map[calc],
+        mtrans_map[mtrans]
+    ]
+
+    # Numerik
+    num_features = [age, height, weight, fcvc, ncp, ch2o, faf, tue]
+    num_scaled = scaler.transform([num_features])[0]
+
+    # Gabung fitur
+    final_input = np.concatenate([cat_encoded, num_scaled])
+
+    # Prediksi
+    prediction = model.predict([final_input])[0]
+
+    # Tampilkan hasil
+    st.success(f"Tingkat Obesitas Anda diprediksi: **{prediction}**")
