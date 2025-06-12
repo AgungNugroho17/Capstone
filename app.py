@@ -35,16 +35,11 @@ height = st.number_input("Tinggi Badan (meter)", value=1.70, step=0.01)
 weight = st.number_input("Berat Badan (kg)", value=70.0)
 family_history = st.selectbox("Riwayat Keluarga Gemuk", list(family_map.keys()))
 favc = st.selectbox("Sering Konsumsi Makanan Tinggi Kalori", list(favc_map.keys()))
-fcvc = st.slider("Porsi Sayur Setiap Makan (1-3)", 1.0, 3.0, 2.0)
-ncp = st.slider("Jumlah Makan Besar per Hari", 1.0, 4.0, 3.0)
 caec = st.selectbox("Ngemil?", list(caec_map.keys()))
-smoke = st.selectbox("Merokok?", list(smoke_map.keys()))
 ch2o = st.slider("Minum Air per Hari (liter)", 1.0, 3.0, 2.0)
-scc = st.selectbox("Pantau Kalori Harian?", list(scc_map.keys()))
 faf = st.slider("Frekuensi Aktivitas Fisik", 0.0, 3.0, 1.0)
-tue = st.slider("Waktu Layar per Hari", 0.0, 3.0, 1.0)
 calc = st.selectbox("Konsumsi Alkohol", list(calc_map.keys()))
-mtrans = st.selectbox("Jenis Transportasi", list(mtrans_map.keys()))
+
 
 # ========================
 # 🔄 Encoding dan Prediksi
